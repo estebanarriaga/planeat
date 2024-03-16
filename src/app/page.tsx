@@ -270,6 +270,28 @@ interface MealPlan {
   meals: DayMealPlan[];
 }
 
+const MealType = ({ ing }: { ing: Ingredient }) => {
+  return (
+    <>
+      <h4
+        key={ing.name}
+        className="scroll-m-20 text-xl font-semibold tracking-tight"
+      >
+        {ing.name || ""}
+      </h4>
+      <ul className="my-6 ml-6 list-disc [&>li]:mt-2">
+        {ing.items.map((item: IngredientItem) => (
+          <li key={item.s_name || ""}>
+            <a href={item.url || ""} target="_blank" rel="noopener noreferrer">
+              {item.s_name}:  €{item.price}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </>
+  );
+};
+
 // Para iconos
 export default async function Home() {
   // let data;
@@ -297,50 +319,35 @@ export default async function Home() {
           Make me a vegetarian meal with products of carrefour.
         </div>
       </div>
-      <div className="flex flex-col justify-start mt-10"> 
+      <div className="flex flex-col justify-start mt-10">
         {meal_plan.meals.map((mealDay, index) => (
-          <div
-            className=" w-full"
-            key={index}
-          >
+          <div className=" w-full" key={index}>
             <h2 className="scroll-m-20 text-3xl font-bold tracking-tight first:mt-0 text-[#253D4E]">
               Day {mealDay.day}
             </h2>
-            {["breakfast", "lunch", "dinner"].map((mealType) => (
-              <div key={mealType}>
-                <div className="flex flex-row items-center justify-start gap-3">
-                  <h3 className="scroll-m-20 text-2xl font-semibold tracking-tight text-[#253D4E]">
-                    {mealType.charAt(0).toUpperCase() + mealType.slice(1)}:
-                  </h3>
-                  <span className=" text-sm px-2 py-1 rounded-md text-[#62E4A3] bg-[#253D4E]">
-                    {mealDay[mealType].description}
-                  </span>
-                </div>
-                {mealDay[mealType].ingredients.map((ing: Ingredient) => (
+              <>
+                <div>
+                {mealDay.breakfast.ingredients.map((ing: Ingredient) => (
                   <>
-                    <h4
-                      key={ing.name}
-                      className="scroll-m-20 text-xl font-semibold tracking-tight"
-                    >
-                      {ing.name}
-                    </h4>
-                    <ul className="my-6 ml-6 list-disc [&>li]:mt-2">
-                      {ing.items.map((item: IngredientItem) => (
-                        <li key={item.s_name}>
-                          <a
-                            href={item.url}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                          >
-                            {item.s_name}: ${item.price}
-                          </a>
-                        </li>
-                      ))}
-                    </ul>
+                    <div className="flex flex-row items-center justify-start gap-3">
+                      <h3 className="scroll-m-20 text-2xl font-semibold tracking-tight text-[#253D4E]">
+                        Breakfast:
+                      </h3>
+                      <span className=" text-sm px-2 py-1 rounded-md text-[#62E4A3] bg-[#253D4E]">
+                        {mealDay.breakfast.description}
+                      </span>
+                    </div>
+                    <MealType ing={ing} key={ing.name} />
                   </>
                 ))}
-              </div>
-            ))}
+                </div>
+                {mealDay.lunch.ingredients.map((ing: Ingredient) => (
+                  <MealType ing={ing} key={ing.name} />
+                ))}
+                {mealDay.dinner.ingredients.map((ing: Ingredient) => (
+                  <MealType ing={ing} key={ing.name} />
+                ))}
+              </>
           </div>
         ))}
       </div>
